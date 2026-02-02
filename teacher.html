@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>教师端 - 学生功课系统</title>
+<style>
+body { font-family: Arial; max-width: 500px; margin: auto; padding: 20px; }
+input, textarea, button { width: 100%; margin: 5px 0; padding: 8px; }
+button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>👩‍🏫 教师输入</h2>
+
+<input id="tid" placeholder="学生ID">
+<input id="tname" placeholder="学生姓名">
+<textarea id="thw" placeholder="功课"></textarea>
+<textarea id="tnotice" placeholder="通告"></textarea>
+
+<button onclick="saveStudent()">保存</button>
+
+<div id="status"></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbzIrydakcVG9PryejyLvXz7IdERX8ibwnQLH-slwRzlZAZAKo353Ng8GVadhK2m5YeN/exec";
+
+function saveStudent(){
+  const data = {
+    id: tid.value.trim(),
+    name: tname.value.trim(),
+    homework: thw.value.trim(),
+    notice: tnotice.value.trim()
+  };
+
+  if(!data.id || !data.name){
+    status.innerHTML="❌ ID 和姓名必填";
+    return;
+  }
+
+  fetch(API, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    status.innerHTML="✅ 已保存";
+    tid.value=""; tname.value=""; thw.value=""; tnotice.value="";
+  })
+  .catch(e=>{
+    status.innerHTML="❌ 保存失败";
+    console.error(e);
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>家长端 - 学生功课查询</title>
+<style>
+body { font-family: Arial; max-width: 500px; margin: auto; padding: 20px; }
+input, button { width: 100%; margin: 5px 0; padding: 8px; }
+button { background: #2196F3; color: white; border: none; cursor: pointer; }
+#result { margin-top: 10px; padding: 10px; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+
+<h2>👨‍👩‍👧 学生功课查询</h2>
+
+<input id="search" placeholder="输入学生姓名或ID">
+<button onclick="searchStudent()">查询</button>
+
+<div id="result"></div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbzIrydakcVG9PryejyLvXz7IdERX8ibwnQLH-slwRzlZAZAKo353Ng8GVadhK2m5YeN/exec";
+
+function searchStudent(){
+  const q = search.value.trim();
+  if(!q){ result.innerHTML="❌ 请填写姓名或ID"; return; }
+
+  fetch(API + "?name=" + encodeURIComponent(q))
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.error){
+      result.innerHTML="❌ 找不到学生";
+    } else {
+      result.innerHTML =
+        "<h3>"+d.name+"</h3>"+
+        "<p>功课："+(d.homework||"暂无")+"</p>"+
+        "<p>通告："+(d.notice||"暂无")+"</p>";
+    }
+  })
+  .catch(e=>{
+    result.innerHTML="❌ 查询失败";
+    console.error(e);
+  });
+}
+</script>
+
+</body>
+</html>
