@@ -1,64 +1,108 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8">
-<title>教师端 - 学生功课系统</title>
-<style>
-body { font-family: Arial; max-width: 500px; margin: auto; padding: 20px; }
-input, textarea, button { width: 100%; margin: 5px 0; padding: 8px; }
-button { background: #4CAF50; color: white; border: none; cursor: pointer; }
-</style>
+  <meta charset="UTF-8">
+  <title>教师端</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>👩‍🏫 教师输入</h2>
+<div class="box">
+  <h2>教师端 - 上传资料</h2>
 
-<input id="tid" placeholder="学生ID">
-<input id="tname" placeholder="学生姓名">
-<textarea id="thw" placeholder="功课"></textarea>
-<textarea id="tnotice" placeholder="通告"></textarea>
+  <input id="name" placeholder="学生姓名">
+  <input id="class" placeholder="班级">
+  <textarea id="homework" placeholder="功课"></textarea>
+  <textarea id="notice" placeholder="通告"></textarea>
 
-<button onclick="saveStudent()">保存</button>
-
-<div id="status"></div>
+  <button onclick="saveData()">保存</button>
+</div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzE8kY2SxgDDCRhc4WIcDXhcQ2h_Ass9nJjdpXK5-S6AaIKWYsDWyIjPVhX0xSPIJF3/exec";
 
-function saveStudent(){
-  alert("按钮点击触发了");
-  const data = {
-    id: tid.value.trim(),
-    name: tname.value.trim(),
-    homework: thw.value.trim(),
-    notice: tnotice.value.trim()
-  };
+const API = "https://script.google.com/macros/s/AKfycbzE8kY2SxgDDCRhc4WIcDXhcQ2h_Ass9nJjdpXK5-S6AaIKWYsDWyIjPVhX0xSPIJF3/exec"; 
 
-  if(!data.id || !data.name){
-    status.innerHTML="❌ ID 和姓名必填";
+function saveData(){
+
+  const name = document.getElementById("name").value.trim();
+  const cls = document.getElementById("class").value.trim();
+  const hw = document.getElementById("homework").value.trim();
+  const nt = document.getElementById("notice").value.trim();
+
+  if(!name){
+    alert("请输入学生姓名");
     return;
   }
 
-  fetch(API, {
+  const data = {
+    name: name,
+    class: cls,
+    homework: hw,
+    notice: nt
+  };
+
+  fetch(API,{
     method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    headers:{
+      "Content-Type":"application/json"
+    },
     body: JSON.stringify(data)
   })
-  .then(r=>r.json())
-  .then(d=>{
-    status.innerHTML="✅ 已保存";
-    tid.value=""; tname.value=""; thw.value=""; tnotice.value="";
+  .then(res => res.text())
+  .then(r => {
+    alert("✅ 保存成功！");
+    clearForm();
   })
-  .catch(e=>{
-    status.innerHTML="❌ 保存失败";
-    console.error(e);
+  .catch(err => {
+    alert("❌ 失败：" + err);
   });
 }
+
+function clearForm(){
+  document.getElementById("name").value = "";
+  document.getElementById("class").value = "";
+  document.getElementById("homework").value = "";
+  document.getElementById("notice").value = "";
+}
+
 </script>
 
 </body>
 </html>
-
 
 
 
